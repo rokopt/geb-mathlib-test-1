@@ -70,8 +70,14 @@ fi
 # shellcheck disable=SC2086  # parents must word-split into args
 jj new $parents -m "integration: fan-in @ $(date -I)"
 
-# Move the bookmark to the new fan-in commit.
-jj bookmark set integration -r @
+# Move the bookmark to the new fan-in commit. Each regeneration
+# produces a new fan-in that is a sibling of the previous one
+# (not its descendant — the old fan-in is intentionally orphaned
+# and garbage-collected). `--allow-backwards` permits jj to move
+# the bookmark to a non-descendant revision; without it, jj
+# refuses with "Refusing to move bookmark backwards or sideways"
+# on every regeneration after the first.
+jj bookmark set integration -r @ --allow-backwards
 
 # Push (lease-protected; jj 0.41+ has no --force flag — see spec
 # § "Force-push mechanism" and reference_jj_force_push.md).
