@@ -12,9 +12,10 @@ jobs:
       contents: write
       pull-requests: write
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+      # mathlib-update-action runs its own actions/checkout internally;
+      # a preceding actions/checkout step here causes the "Duplicate
+      # header: Authorization" failure documented in runbook
+      # discovery D.2 (2026-05-14).
       - uses: leanprover-community/mathlib-update-action@d2b8804850b44ce9be89ab9c39ad460e11e563eb  # main @ 2025-11-11
         with:
           intermediate_releases: latest
